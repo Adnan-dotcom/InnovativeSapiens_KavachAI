@@ -16,12 +16,9 @@ iot = GuardianIoT()
 cc = CleanCodeAI()
 
 st.markdown('''
-    <div style="display: flex; align-items: center; gap: 24px; margin-top: 10px; margin-bottom: 20px;">
-        <div class="kavach-symbol" style="width: 55px; height: 55px; margin: 0;"></div>
-        <div>
-            <h1 style="margin: 0; line-height: 1.1;">Infrastructure Security</h1>
-            <p class="page-subtitle">IoT Protection & Supply Chain Integrity Audit</p>
-        </div>
+    <div style="text-align: center; margin-top: 20px; margin-bottom: 40px;">
+        <h1 style="font-size: 3rem; font-weight: 900; letter-spacing: -1.5px; margin-bottom: 5px; color: #fff;">INFRASTRUCTURE SECURITY</h1>
+        <div style="font-size: 0.8rem; font-weight: 700; color: var(--cyan); letter-spacing: 4px; text-transform: uppercase;">IoT Protection & Code Audit</div>
     </div>
 ''', unsafe_allow_html=True)
 

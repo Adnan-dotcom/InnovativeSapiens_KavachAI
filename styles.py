@@ -10,59 +10,27 @@ GLOBAL_CSS = """<style>
 
 :root {
     --cyan: #00f2ff;
-    --cyan-dim: rgba(0,242,255,0.08);
-    --cyan-glow: rgba(0,242,255,0.2);
     --emerald: #10ff99;
-    --emerald-dim: rgba(16,255,153,0.08);
     --coral: #ff3366;
-    --coral-dim: rgba(255,51,102,0.08);
     --amber: #ffaa33;
-    --amber-dim: rgba(255,170,51,0.08);
     --violet: #8b5cf6;
-    --violet-dim: rgba(139,92,246,0.08);
-    --surface: rgba(255,255,255,0.02);
-    --surface-hover: rgba(255,255,255,0.05);
-    --border: rgba(255,255,255,0.05);
-    --border-hover: rgba(0,242,255,0.4);
     --text: #f0f0ff;
     --text-dim: #94a3b8;
-    --bg-deep: #020205;
-    --bg-mid: #050510;
-    --glass-bg: rgba(8,8,16,0.7);
-    --glass-border: rgba(255,255,255,0.06);
-    --radius: 20px;
-    --radius-sm: 12px;
-    --shadow-glow: 0 0 40px rgba(0,242,255,0.05);
+    --bg-deep: #030712;
+    --glass-bg: rgba(17, 25, 40, 0.65);
+    --glass-border: rgba(255, 255, 255, 0.08);
 }
 
 * { font-family: 'Inter', -apple-system, sans-serif !important; }
-code, pre, .stCode, [data-testid="stCode"] { font-family: 'JetBrains Mono', monospace !important; }
 
 /* ── App Background ── */
 .stApp {
     background: var(--bg-deep) !important;
-    background-image: 
-        radial-gradient(circle at 15% 15%, rgba(0,242,255,0.05) 0%, transparent 40%),
-        radial-gradient(circle at 85% 85%, rgba(139,92,246,0.04) 0%, transparent 40%) !important;
 }
 
-/* ── Animations ── */
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(24px); filter: blur(4px); }
-    to   { opacity: 1; transform: translateY(0); filter: blur(0); }
-}
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(6px); } /* Move DOWN to prevent top cropping */
-}
-@keyframes pulseGlow {
-    0%, 100% { filter: drop-shadow(0 0 5px var(--emerald)); opacity: 1; }
-    50%      { filter: drop-shadow(0 0 12px var(--emerald)); opacity: 0.8; }
-}
-@keyframes borderSweep {
-    0% { border-color: var(--glass-border); }
-    50% { border-color: var(--cyan-glow); }
-    100% { border-color: var(--glass-border); }
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ── Glassmorphism Cards (Metric) ── */
@@ -384,6 +352,31 @@ div[data-testid="stPlotlyChart"] {
 .delay-7 { animation-delay: 0.35s !important; }
 .delay-8 { animation-delay: 0.40s !important; }
 
+/* ── Minimalist Glass Cards ── */
+.glass-card {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 24px !important;
+    padding: 30px !important;
+    margin-bottom: 20px !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.glass-card:hover {
+    border-color: rgba(0, 242, 255, 0.3) !important;
+    transform: translateY(-5px) !important;
+}
+
+.section-title {
+    font-size: 0.85rem !important;
+    font-weight: 800 !important;
+    color: var(--text-dim) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    margin-bottom: 25px !important;
+}
+
 /* Hide default streamlit padding bloat */
 .block-container { padding-top: 2rem !important; padding-bottom: 1rem !important; }
 div[data-testid="stSidebarContent"] { padding-top: 0 !important; }
@@ -425,10 +418,9 @@ def render_sidebar_controls(st, logger=None, simulator=None, sniffer=None):
     """Shared sidebar controls for consistent global navigation and simulation."""
     with st.sidebar:
         st.markdown(f'''
-            <div class="logo-container">
-                <div class="kavach-symbol" style="width: 55px; height: 55px;"></div>
-                <div class="logo-text">KAVACH AI</div>
-                <div class="version-badge">AGENTIC DEFENSE v2.5</div>
+            <div style="text-align: center; padding: 20px 0;">
+                <div style="font-size: 1.8rem; font-weight: 900; letter-spacing: -1px; color: #fff;">🛡️ KAVACH</div>
+                <div style="font-size: 0.65rem; font-weight: 700; color: var(--cyan); letter-spacing: 3px; margin-top: 5px;">AGENTIC CORE v2.5</div>
             </div>
         ''', unsafe_allow_html=True)
         
