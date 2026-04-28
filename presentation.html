@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kavach AI Presentation</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #a8edea, #fed6e3);
+            color: #333;
+            transition: background 0.5s;
+        }
+        .slide {
+            display: none;
+            padding: 20px;
+            text-align: center;
+            opacity: 0.95;
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            margin: 20px auto;
+            width: 80%;
+            max-width: 800px;
+        }
+        .active {
+            display: block;
+        }
+        h1, h2, h3 {
+            margin: 0;
+            padding: 10px;
+        }
+        h1 {
+            font-size: 2.5em;
+            color: #3f51b5;
+        }
+        h2 {
+            font-size: 2em;
+            color: #e91e63;
+        }
+        nav {
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #3f51b5;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #283593;
+        }
+    </style>
+</head>
+<body>
+    <div id="slide1" class="slide active">
+        <h1>Kavach AI</h1>
+        <h2>Autonomous Agentic Cyber Defense System</h2>
+    </div>
+    <div id="slide2" class="slide">
+        <h2>Problem Statement</h2>
+        <p>The cyber threats landscape is evolving rapidly, requiring innovative solutions to protect digital assets.</p>
+    </div>
+    <div id="slide3" class="slide">
+        <h2>Solution Overview</h2>
+        <p>Kavach AI utilizes advanced algorithms to predict, detect and mitigate cyber threats autonomously.</p>
+    </div>
+    <div id="slide4" class="slide">
+        <h2>Core Architecture and Technology Stack</h2>
+        <p>Built on a robust architecture leveraging cutting-edge technologies and frameworks.</p>
+    </div>
+    <div id="slide5" class="slide">
+        <h2>The 6 Modules</h2>
+        <ul>
+            <li>Command Center</li>
+            <li>Sentinel</li>
+            <li>Deception</li>
+            <li>Infrastructure</li>
+            <li>Behavioral</li>
+            <li>Neural</li>
+        </ul>
+    </div>
+    <div id="slide6" class="slide">
+        <h2>Key Differentiators and Innovation</h2>
+        <p>Kavach AI stands out due to its unique blend of proactive defense strategies and real-time analysis.</p>
+    </div>
+    <div id="slide7" class="slide">
+        <h2>Live Demo Capabilities and Features</h2>
+        <p>Interactive simulations showcasing Kavach AI's response to various cyber threats in real-time.</p>
+    </div>
+    <div id="slide8" class="slide">
+        <h2>Real-world Impact and Use Cases</h2>
+        <p>Successfully deployed in various sectors, demonstrating significant reduction in breach incidents.</p>
+    </div>
+    <div id="slide9" class="slide">
+        <h2>Technical Implementation Highlights</h2>
+        <p>Implementation involves scalable cloud architecture, machine learning models, and continuous learning.</p>
+    </div>
+    <div id="slide10" class="slide">
+        <h2>Closing Slide</h2>
+        <p>Join us in ensuring a safer digital world with Kavach AI. Let's innovate together!</p>
+    </div>
+    <nav>
+        <button onclick="showSlide(-1)">Previous</button>
+        <button onclick="showSlide(1)">Next</button>
+    </nav>
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        function showSlide(direction) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + direction + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+    </script>
+</body>
+</html>
