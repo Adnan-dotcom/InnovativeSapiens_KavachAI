@@ -102,7 +102,7 @@ Kavach AI includes a **Global Command Sidebar** available on every page. To demo
 ---
 
 ## 👤 Author
-**Adnan Hussain** | DSATM  
+**Mohammed Adnan Hussain** | DSATM  
 Built for **Innovative Sapiens Kavach AI Hackathon**
 
 *"Traditional security is a lock. Kavach AI is a sentient guard that watches the locks, baits the intruders, and fights back."*
