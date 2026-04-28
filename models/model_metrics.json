@@ -1,0 +1,106 @@
+{
+  "accuracy": 0.9416666666666667,
+  "report": {
+    "Normal": {
+      "precision": 0.9459459459459459,
+      "recall": 0.875,
+      "f1-score": 0.9090909090909091,
+      "support": 40.0
+    },
+    "DDoS Attack": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "Port Scan": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "Brute Force": {
+      "precision": 0.782608695652174,
+      "recall": 0.9,
+      "f1-score": 0.8372093023255814,
+      "support": 20.0
+    },
+    "DNS Amplification": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "accuracy": 0.9416666666666667,
+    "macro avg": {
+      "precision": 0.9457109283196239,
+      "recall": 0.9550000000000001,
+      "f1-score": 0.9492600422832982,
+      "support": 120.0
+    },
+    "weighted avg": {
+      "precision": 0.945750097924011,
+      "recall": 0.9416666666666667,
+      "f1-score": 0.9425651867512332,
+      "support": 120.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      35,
+      0,
+      0,
+      5,
+      0
+    ],
+    [
+      0,
+      20,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      20,
+      0,
+      0
+    ],
+    [
+      2,
+      0,
+      0,
+      18,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      20
+    ]
+  ],
+  "feature_importance": {
+    "packet_length": 0.5754319519776782,
+    "protocol": 0.08173490204999133,
+    "src_port": 0.15446872866990483,
+    "dst_port": 0.1883644173024257
+  },
+  "feature_names": [
+    "packet_length",
+    "protocol",
+    "src_port",
+    "dst_port"
+  ],
+  "class_names": [
+    "Normal",
+    "DDoS Attack",
+    "Port Scan",
+    "Brute Force",
+    "DNS Amplification"
+  ],
+  "train_size": 480,
+  "test_size": 120
+}
