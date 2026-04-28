@@ -99,7 +99,14 @@ div[data-testid="stSidebar"] {
     border-right: 1px solid var(--glass-border) !important;
 }
 div[data-testid="stSidebarNav"] {
-    padding-top: 40px !important;
+    padding-top: 20px !important;
+}
+/* Zap the keyboard_double error and hide collapse button for a cleaner demo */
+button[data-testid="stSidebarCollapseButton"] {
+    display: none !important;
+}
+[data-testid="stSidebar"] span, [data-testid="stSidebar"] div {
+    font-variant-ligatures: none !important;
 }
 footer { display: none !important; }
 div[data-testid="stSidebar"] > div:first-child {
