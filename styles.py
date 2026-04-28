@@ -98,6 +98,10 @@ div[data-testid="stSidebar"] {
     backdrop-filter: blur(32px) !important;
     border-right: 1px solid var(--glass-border) !important;
 }
+div[data-testid="stSidebarNav"] {
+    padding-top: 40px !important;
+}
+footer { display: none !important; }
 div[data-testid="stSidebar"] > div:first-child {
     animation: slideInLeft 0.4s ease-out both;
 }
@@ -379,7 +383,6 @@ div[data-testid="stPlotlyChart"] {
 
 /* Hide default streamlit padding bloat */
 .block-container { padding-top: 2rem !important; padding-bottom: 1rem !important; }
-div[data-testid="stSidebarContent"] { padding-top: 0 !important; }
 
 </style>"""
 

@@ -6,6 +6,7 @@ from core.detector import ThreatDetector
 from core.guardian import AutonomousGuardian
 from core.simulator import AttackSimulator
 
+@st.cache_resource
 def init_kavach():
     """Initializes and returns shared Kavach AI components."""
     logger = ThreatLogger(DB_PATH)

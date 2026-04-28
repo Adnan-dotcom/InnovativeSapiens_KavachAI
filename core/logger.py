@@ -62,6 +62,19 @@ class ThreatLogger:
             return {'total_threats': total_threats, 'ips_blocked': ips_blocked, 'total_events': total_events,
                     'by_type': by_type, 'top_ips': top_ips, 'time_series': time_series, 'by_protocol': by_protocol}
 
+    def batch_log_threats(self, events):
+        """Log multiple threats in a single transaction for high performance."""
+        with self._lock:
+            conn = self._conn()
+            now = datetime.now().isoformat()
+            conn.executemany('''INSERT INTO threats 
+                (timestamp,src_ip,dst_ip,protocol,src_port,dst_port,packet_length,threat_type,confidence,action_taken,severity,blocked)
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?)''',
+                [(now, e['src_ip'], e['dst_ip'], e['protocol'], e['src_port'], e['dst_port'],
+                  e['packet_length'], e['threat_type'], round(e['confidence'],4), e['action_taken'], e['severity'], int(e['blocked'])) 
+                 for e in events])
+            conn.commit(); conn.close()
+
     def clear_all(self):
         with self._lock:
             conn = self._conn(); conn.execute('DELETE FROM threats'); conn.commit(); conn.close()

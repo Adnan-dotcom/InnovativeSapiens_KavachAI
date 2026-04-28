@@ -75,9 +75,9 @@ class AttackSimulator:
                 blocked = 'HONEYTRAPPED' in action
 
             proto_name = self.PROTO_NAMES.get(evt['protocol'], str(evt['protocol']))
-            self.logger.log_threat(evt['src_ip'], evt['dst_ip'], proto_name,
-                                   evt['src_port'], evt['dst_port'], evt['packet_length'],
-                                   pred['threat_type'], pred['confidence'], action,
-                                   pred['severity'], blocked)
-            results.append({**evt, **pred, 'action': action, 'blocked': blocked})
+            results.append({
+                **evt, **pred, 'action_taken': action, 'blocked': blocked, 'protocol': proto_name
+            })
+        
+        self.logger.batch_log_threats(results)
         return results
