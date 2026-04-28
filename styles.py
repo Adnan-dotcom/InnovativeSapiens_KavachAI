@@ -112,9 +112,8 @@ button[data-testid="stSidebarCollapse"],
     font-variant-ligatures: none !important;
 }
 footer { display: none !important; }
-div[data-testid="stSidebar"] > div:first-child {
-    animation: slideInLeft 0.4s ease-out both;
-}
+
+/* ── Sidebar Buttons (Static) ── */
 section[data-testid="stSidebar"] .stButton button {
     background: rgba(255,255,255,0.03) !important;
     border: 1px solid var(--glass-border) !important;
@@ -122,13 +121,11 @@ section[data-testid="stSidebar"] .stButton button {
     border-radius: 12px !important;
     font-weight: 600 !important;
     padding: 12px !important;
-    transition: all 0.3s ease !important;
 }
 section[data-testid="stSidebar"] .stButton button:hover {
     background: var(--cyan-dim) !important;
     border-color: var(--cyan-glow) !important;
     color: var(--cyan) !important;
-    transform: translateX(4px) !important;
 }
 
 /* ── Buttons (main area) ── */
