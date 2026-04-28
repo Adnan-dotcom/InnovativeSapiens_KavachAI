@@ -101,8 +101,11 @@ div[data-testid="stSidebar"] {
 div[data-testid="stSidebarNav"] {
     padding-top: 20px !important;
 }
-/* Zap the keyboard_double error and hide collapse button for a cleaner demo */
-button[data-testid="stSidebarCollapse"] {
+/* NUCLEAR OPTION: Hide all internal sidebar buttons/toggles and the main streamlit header */
+button[data-testid="stSidebarCollapse"], 
+[data-testid="collapsedControl"], 
+.st-emotion-cache-6q9sum, 
+[data-testid="stHeader"] {
     display: none !important;
 }
 [data-testid="stSidebar"] span, [data-testid="stSidebar"] div {
