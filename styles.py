@@ -28,6 +28,29 @@ GLOBAL_CSS = """<style>
     background: var(--bg-deep) !important;
 }
 
+@keyframes pulseGlow {
+    0% { transform: translateX(-50%) scale(1); box-shadow: 0 0 20px rgba(255, 51, 102, 0.4); }
+    50% { transform: translateX(-50%) scale(1.05); box-shadow: 0 0 50px rgba(255, 51, 102, 0.8); }
+    100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 20px rgba(255, 51, 102, 0.4); }
+}
+@keyframes alarmFlash {
+    0% { background: #030712; }
+    50% { background: #660000; }
+    100% { background: #030712; }
+}
+@keyframes extremeFlash {
+    0% { background: rgba(255, 0, 0, 0.4); }
+    50% { background: rgba(255, 0, 0, 0.8); }
+    100% { background: rgba(255, 0, 0, 0.4); }
+}
+@keyframes glitchText {
+    0% { transform: translate(0); }
+    20% { transform: translate(-5px, 5px); }
+    40% { transform: translate(-5px, -5px); }
+    60% { transform: translate(5px, 5px); }
+    80% { transform: translate(5px, -5px); }
+    100% { transform: translate(0); }
+}
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(20px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -424,6 +447,80 @@ def inject_css(st):
     """Call at top of every page to inject the shared design system."""
     st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
 
+def render_alarm(st):
+    """
+    Triggers a full-screen high-intensity red pulsing alarm and an auditory siren.
+    """
+    if st.session_state.get('threat_detected'):
+        # 1. Full-Screen Breach Overlay
+        st.markdown("""
+            <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+                        background: rgba(255,0,0,0.3); z-index: 999999; pointer-events: none;
+                        animation: extremeFlash 0.4s infinite; display: flex; 
+                        align-items: center; justify-content: center; flex-direction: column;">
+                <div style="font-size: 8rem; font-weight: 900; color: #fff; text-shadow: 0 0 30px #f00;
+                            animation: glitchText 0.2s infinite; letter-spacing: -5px;">BREACH</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #fff; letter-spacing: 10px; margin-top: 20px;">CRITICAL SYSTEM COMPROMISE</div>
+            </div>
+            <style>
+            .stApp { filter: grayscale(0.5) contrast(1.2) !important; }
+            .glass-card { border: 2px solid #ff4d6a !important; box-shadow: 0 0 50px rgba(255,77,106,0.5) !important; }
+            </style>
+        """, unsafe_allow_html=True)
+        
+        # 2. Dual-Oscillator Emergency Siren
+        st.markdown("""
+            <script>
+            if (!window.sirenStarted) {
+                window.sirenStarted = true;
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                const resumeAudio = () => { if (audioCtx.state === 'suspended') audioCtx.resume(); };
+                document.addEventListener('click', resumeAudio);
+                document.addEventListener('keydown', resumeAudio);
+
+                function playSiren() {
+                    if (!window.sirenStarted) return;
+                    
+                    const osc1 = audioCtx.createOscillator();
+                    const osc2 = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    
+                    osc1.type = 'sawtooth';
+                    osc2.type = 'square';
+                    
+                    // High-pitched modulation for emergency feel
+                    osc1.frequency.setValueAtTime(600, audioCtx.currentTime);
+                    osc1.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.4);
+                    
+                    osc2.frequency.setValueAtTime(605, audioCtx.currentTime);
+                    osc2.frequency.exponentialRampToValueAtTime(1205, audioCtx.currentTime + 0.4);
+                    
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                    
+                    osc1.connect(gain);
+                    osc2.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    
+                    osc1.start(); osc2.start();
+                    osc1.stop(audioCtx.currentTime + 0.4);
+                    osc2.stop(audioCtx.currentTime + 0.4);
+                    
+                    setTimeout(playSiren, 500);
+                }
+                playSiren();
+            }
+            </script>
+        """, unsafe_allow_html=True)
+
+        # 3. Emergency UI Actions
+        st.error("🚨 KAVACH AI: AUTONOMOUS DEFENSE PROTOCOL ACTIVATED - BLOCKING ATTACKER...")
+        if st.button("🛑 SILENCE ALARM & CLEAR BREACH", type="primary", use_container_width=True):
+            st.session_state.threat_detected = False
+            st.markdown("<script>window.sirenStarted = false;</script>", unsafe_allow_html=True)
+            st.rerun()
+
 def render_sidebar_controls(st, logger=None, simulator=None, sniffer=None):
     """Shared sidebar controls for consistent global navigation and simulation."""
     with st.sidebar:
@@ -455,6 +552,7 @@ def render_sidebar_controls(st, logger=None, simulator=None, sniffer=None):
         st.markdown('<p style="color:var(--text-dim); font-size:0.7rem; font-weight:800; letter-spacing:2px; text-transform:uppercase; margin-bottom:12px;">📡 Live Network Capture</p>', unsafe_allow_html=True)
         
         if sniffer and sniffer.running:
+            st.success("🛰️ Sniffer Active")
             if st.button("🛑 Stop Live Capture", use_container_width=True, type="primary"):
                 sniffer.stop()
                 st.rerun()
@@ -462,10 +560,17 @@ def render_sidebar_controls(st, logger=None, simulator=None, sniffer=None):
             if st.button("🛰️ Start Live Sniffer", use_container_width=True):
                 if sniffer:
                     sniffer.start()
-                    st.toast("Neural Sniffer Active", icon="📡")
                     st.rerun()
-                else:
-                    st.error("Sniffer Unavailable")
+
+        st.divider()
+
+        # ── Demo Fail-Safe (The Money Shot) ──
+        if st.button("🚨 TRIGGER EMERGENCY BREACH", use_container_width=True, help="Use this if live scan is blocked by OS"):
+            if simulator:
+                results = simulator.run_scenario('port_scan')
+                st.session_state.threat_detected = True
+                st.toast("DEMO BREACH TRIGGERED", icon="🔥")
+                st.rerun()
 
         st.divider()
         

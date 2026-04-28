@@ -7,14 +7,16 @@ from core.logger import ThreatLogger
 from core.detector import ThreatDetector
 from core.guardian import AutonomousGuardian
 from core.simulator import AttackSimulator
-from styles import inject_css, CHART_LAYOUT, PIE_COLORS, COLORS, render_sidebar_controls
+from styles import inject_css, CHART_LAYOUT, PIE_COLORS, COLORS, render_sidebar_controls, render_alarm
 from utils import init_kavach
+from datetime import datetime
 
 st.set_page_config(page_title="Kavach AI", page_icon="🛡️", layout="wide", initial_sidebar_state="expanded")
 inject_css(st)
 
 logger, detector, guardian, simulator, sniffer = init_kavach()
 render_sidebar_controls(st, logger, simulator, sniffer)
+render_alarm(st)
 
 # ──────────────────────── Main Content ────────────────────────
 st.markdown('''
@@ -36,6 +38,19 @@ else:
         elif e['severity'] == 'medium': threat_impact += 3
     score = 100 - (threat_impact / 2)
     score = max(0, min(100, score))
+
+
+# ── Threat Alert Overlay (The "Money Shot") ──
+latest_threat = logger.get_recent_threats(1)
+if latest_threat and latest_threat[0]['threat_type'] != 'Normal':
+    # Check if threat is fresh (last 10 seconds)
+    t_str = latest_threat[0]['timestamp']
+    try:
+        t_obj = datetime.fromisoformat(t_str)
+        if (datetime.now() - t_obj).total_seconds() < 10 and latest_threat[0]['severity'] in ['high', 'critical']:
+            st.session_state.threat_detected = True
+            st.rerun()
+    except: pass
 
 # ── Hero Section ──
 score_color = COLORS['emerald'] if score > 80 else COLORS['amber'] if score > 50 else COLORS['coral']
@@ -100,7 +115,52 @@ else:
     st.info("System initializing. No threats detected.")
 st.markdown('</div>', unsafe_allow_html=True)
 
+# ── Live Traffic Intercept Feed ──
+st.markdown('<div class="glass-card"><div class="section-title">📡 Live Intercept Stream</div>', unsafe_allow_html=True)
+if recent:
+    # Get local IP for display
+    import socket
+    try:
+        local_ip = socket.gethostbyname(socket.gethostname())
+    except:
+        local_ip = "KAVACH-HOST"
+
+    for t in recent[:8]: # Show top 8 most recent
+        is_threat = t['threat_type'] != 'Normal'
+        glow = "box-shadow: 0 0 15px var(--coral);" if is_threat else ""
+        text_color = "var(--coral)" if is_threat else "var(--emerald)"
+        
+        st.markdown(f'''
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; margin-bottom: 8px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); {glow}">
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-dim);">
+                    <span style="color: {text_color}; font-weight: 800;">[ {t['threat_type']} ]</span> {t['timestamp'].split('T')[1][:8]}
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase;">Source</div>
+                        <div style="font-weight: 700; color: #fff;">{t['src_ip']}</div>
+                    </div>
+                    <div style="color: var(--cyan); font-weight: 900;">⟶</div>
+                    <div style="text-align: left;">
+                        <div style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase;">Target</div>
+                        <div style="font-weight: 700; color: var(--cyan);">{t['dst_ip'] if t['dst_ip'] != '192.168.1.100' else local_ip}</div>
+                    </div>
+                </div>
+                <div style="font-weight: 700; font-size: 0.8rem; color: {text_color}; border: 1px solid {text_color}; padding: 2px 8px; border-radius: 4px;">
+                    {t['action_taken']}
+                </div>
+            </div>
+        ''', unsafe_allow_html=True)
+else:
+    st.info("No traffic intercepted yet. Start the Live Sniffer or Simulation.")
+st.markdown('</div>', unsafe_allow_html=True)
+
 # ── Footer ──
 st.markdown('<div style="text-align:center; margin-top:80px; padding-top:40px; border-top:1px solid rgba(255,255,255,0.05); color:var(--text-dim); font-size:0.8rem; letter-spacing:4px; font-weight:700; text-transform:uppercase;">AUTONOMOUS AI DEFENSE · KAVACH AI</div>', unsafe_allow_html=True)
 
 
+# ── Auto-Refresh for Live Demo ──
+# We move this to the end so the UI renders fully before refreshing
+if sniffer and sniffer.running:
+    time.sleep(2)
+    st.rerun()
