@@ -9,7 +9,7 @@ from core.deeptrust import DeepTrust
 st.set_page_config(page_title="Deception & Identity | Kavach AI", page_icon="🪤", layout="wide")
 inject_css(st)
 
-logger, detector, guardian, simulator, sniffer = init_kavach()
+logger, detector, guardian, simulator, sniffer, honeyport = init_kavach()
 render_sidebar_controls(st, logger, simulator, sniffer)
 
 sg = ShadowGuard()
@@ -31,6 +31,18 @@ if 'sg_files' not in st.session_state or 'dt_risks' not in st.session_state:
 tab_decoys, tab_behavior, tab_identity = st.tabs(["🍯 Generative Decoys", "🧬 Behavioral Fingerprints", "🛡️ Identity Assurance"])
 
 with tab_decoys:
+    st.markdown(f'''
+        <div class="glass-card" style="background: linear-gradient(135deg, rgba(0, 242, 255, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="section-title">🛰️ Active Honeyport (Live Trap)</div>
+                <div class="pill pill-online">ONLINE: PORT 9999</div>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-dim); margin-top: -15px; margin-bottom: 20px;">
+                Direct your friend's laptop to <code>http://{st.session_state.get('local_ip', 'YOUR_IP')}:9999</code> to trigger a deceptive alert.
+            </div>
+        </div>
+    ''', unsafe_allow_html=True)
+    
     st.markdown('<div class="glass-card"><div class="section-title">🍯 Active Honeyfiles</div>', unsafe_allow_html=True)
     for i, f in enumerate(st.session_state.sg_files[:8]):
         color = COLORS['coral'] if f['status'] == 'TRIGGERED' else COLORS['emerald']

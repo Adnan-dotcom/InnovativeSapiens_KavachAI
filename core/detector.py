@@ -1,5 +1,6 @@
-"""Kavach AI Threat Detector — AI inference engine"""
 import joblib, numpy as np, os
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
 
 class ThreatDetector:
     ATTACK_TYPES = {0: 'Normal', 1: 'DDoS Attack', 2: 'Port Scan', 3: 'Brute Force', 4: 'DNS Amplification'}

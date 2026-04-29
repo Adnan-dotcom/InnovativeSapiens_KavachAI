@@ -2,27 +2,15 @@ import streamlit as st
 import sys, os, pandas as pd
 import plotly.graph_objects as go
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from styles import inject_css, CHART_LAYOUT, COLORS, render_sidebar_controls, render_alarm
+from styles import inject_css, CHART_LAYOUT, COLORS, render_sidebar_controls
 from utils import init_kavach
 from datetime import datetime
 
 st.set_page_config(page_title="Sentinel Intelligence | Kavach AI", page_icon="🕵️", layout="wide")
 inject_css(st)
 
-logger, detector, guardian, simulator, sniffer = init_kavach()
+logger, detector, guardian, simulator, sniffer, honeyport = init_kavach()
 render_sidebar_controls(st, logger, simulator, sniffer)
-render_alarm(st)
-
-# ── Auto-Panic Logic ──
-latest_threat = logger.get_recent_threats(1)
-if latest_threat and latest_threat[0]['threat_type'] != 'Normal':
-    t_str = latest_threat[0]['timestamp']
-    try:
-        t_obj = datetime.fromisoformat(t_str)
-        if (datetime.now() - t_obj).total_seconds() < 10 and latest_threat[0]['severity'] in ['high', 'critical']:
-            st.session_state.threat_detected = True
-    except: pass
-
 stats = logger.get_threat_stats()
 
 st.markdown('''

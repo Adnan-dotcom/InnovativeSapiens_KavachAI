@@ -1,7 +1,7 @@
 import streamlit as st
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from styles import inject_css, COLORS, render_sidebar_controls, render_alarm
+from styles import inject_css, COLORS, render_sidebar_controls
 from utils import init_kavach
 from core.ransomware import RansomwareShield
 from core.phishing import PhishGuard
@@ -9,10 +9,8 @@ from core.phishing import PhishGuard
 st.set_page_config(page_title="Behavioral Defense | Kavach AI", page_icon="🚨", layout="wide")
 inject_css(st)
 
-logger, detector, guardian, simulator, sniffer = init_kavach()
+logger, detector, guardian, simulator, sniffer, honeyport = init_kavach()
 render_sidebar_controls(st, logger, simulator, sniffer)
-render_alarm(st)
-
 rs = RansomwareShield()
 pg = PhishGuard()
 
@@ -31,11 +29,6 @@ tab_malware, tab_phish = st.tabs(["🛡️ Malware Neutralization", "🎣 Phishi
 
 with tab_malware:
     st.markdown('<div class="glass-card"><div class="section-title">🚨 Active Ransomware Threats</div>', unsafe_allow_html=True)
-    if st.button("🚨 Simulate Malware Attack", use_container_width=True, type="primary"):
-        st.session_state.is_under_attack = True
-        st.session_state.threat_detected = True
-        st.rerun()
-
     for i, d in enumerate(st.session_state.rs_detections[:6]):
         st.markdown(f'''<div class="threat-card">
             🔴 <strong style="color:{COLORS['coral']}">{d['family']}</strong> &nbsp;·&nbsp; 
@@ -55,9 +48,3 @@ with tab_phish:
             <br/><span style="color:{COLORS['amber']};font-size:0.75rem">Verdict: {log['verdict']} · Action: {log['action']}</span>
         </div>''', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
-
-if st.session_state.get('is_under_attack'):
-    if not st.session_state.get('threat_detected'): # If alarm was cleared but attack state remains
-        if st.button("🛑 STOP ATTACK", use_container_width=True, type="primary"):
-            st.session_state.is_under_attack = False
-            st.rerun()

@@ -14,9 +14,40 @@ from datetime import datetime
 st.set_page_config(page_title="Kavach AI", page_icon="🛡️", layout="wide", initial_sidebar_state="expanded")
 inject_css(st)
 
-logger, detector, guardian, simulator, sniffer = init_kavach()
+if 'threat_detected' not in st.session_state:
+    st.session_state.threat_detected = False
+if 'demo_armed' not in st.session_state:
+    st.session_state.demo_armed = False
+
+logger, detector, guardian, simulator, sniffer, honeyport = init_kavach()
+if 'target_ip' in st.session_state and sniffer:
+    sniffer.target_ip = st.session_state.target_ip
+
+if 'initialized' not in st.session_state:
+    logger.clear_all()
+    st.session_state.initialized = True
+
 render_sidebar_controls(st, logger, simulator, sniffer)
-render_alarm(st)
+latest_threat = logger.get_recent_threats(1)
+render_alarm(st, latest_threat)
+
+# ── Threat Alert Logic ──
+if latest_threat and latest_threat[0]['threat_type'] != 'Normal':
+    if st.session_state.get('demo_armed'):
+        if 'armed_at' not in st.session_state:
+            st.session_state.armed_at = datetime.now()
+        
+        t_id = latest_threat[0]['id']
+        if st.session_state.get('last_alert_id') != t_id:
+            try:
+                t_obj = datetime.fromisoformat(latest_threat[0]['timestamp'])
+                if t_obj > st.session_state.armed_at:
+                    st.session_state.threat_detected = True
+                    st.session_state.last_alert_id = t_id
+                    st.rerun()
+            except: pass
+    else:
+        if 'armed_at' in st.session_state: del st.session_state.armed_at
 
 # ──────────────────────── Main Content ────────────────────────
 st.markdown('''
@@ -25,6 +56,12 @@ st.markdown('''
         <div style="font-size: 0.85rem; font-weight: 700; color: var(--cyan); letter-spacing: 5px; text-transform: uppercase;">Autonomous Defense Protocol</div>
     </div>
 ''', unsafe_allow_html=True)
+
+import socket
+try:
+    st.session_state.local_ip = socket.gethostbyname(socket.gethostname())
+except:
+    st.session_state.local_ip = "127.0.0.1"
 
 stats = logger.get_threat_stats()
 recent_events = logger.get_recent_threats(50)
@@ -39,18 +76,6 @@ else:
     score = 100 - (threat_impact / 2)
     score = max(0, min(100, score))
 
-
-# ── Threat Alert Overlay (The "Money Shot") ──
-latest_threat = logger.get_recent_threats(1)
-if latest_threat and latest_threat[0]['threat_type'] != 'Normal':
-    # Check if threat is fresh (last 10 seconds)
-    t_str = latest_threat[0]['timestamp']
-    try:
-        t_obj = datetime.fromisoformat(t_str)
-        if (datetime.now() - t_obj).total_seconds() < 10 and latest_threat[0]['severity'] in ['high', 'critical']:
-            st.session_state.threat_detected = True
-            st.rerun()
-    except: pass
 
 # ── Hero Section ──
 score_color = COLORS['emerald'] if score > 80 else COLORS['amber'] if score > 50 else COLORS['coral']

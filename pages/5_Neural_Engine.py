@@ -9,7 +9,7 @@ from utils import init_kavach
 st.set_page_config(page_title="Neural Engine | Kavach AI", page_icon="🧠", layout="wide")
 inject_css(st)
 
-logger, detector, guardian, simulator, sniffer = init_kavach()
+logger, detector, guardian, simulator, sniffer, honeyport = init_kavach()
 render_sidebar_controls(st, logger, simulator, sniffer)
 
 if not os.path.exists(METRICS_PATH):
