@@ -66,7 +66,7 @@ Kavach-AI/
 ---
 
 ## 👤 Author
-**Mohammed Adnan Hussain** | DSATM  
+**Mohammed Adnan Hussain** &**Monali Kaushal** | DSATM  
 *Built for the Innovative Sapiens Kavach AI Hackathon*
 
 ---
