@@ -25,6 +25,8 @@ FILES = [
     ("core/guardian_iot.py", "python"),
     ("core/cleancode.py", "python"),
     ("core/ransomware.py", "python"),
+    ("core/phishing.py", "python"),
+    ("core/honeypot.py", "python"),
     ("pages/1_Sentinel_Intelligence.py", "python"),
     ("pages/2_Deception_Identity.py", "python"),
     ("pages/3_Infrastructure_Security.py", "python"),

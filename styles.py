@@ -37,6 +37,14 @@ GLOBAL_CSS = """<style>
     from { opacity: 0; transform: translateY(20px); }
     to   { opacity: 1; transform: translateY(0); }
 }
+@keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-3px, 3px); }
+    40% { transform: translate(-3px, -3px); }
+    60% { transform: translate(3px, 3px); }
+    80% { transform: translate(3px, -3px); }
+    100% { transform: translate(0); }
+}
 
 /* ── Glassmorphism Cards (Metric) ── */
 div[data-testid="stMetric"] {
@@ -79,6 +87,12 @@ footer { display: none !important; }
     animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+.terminal-text {
+    font-family: 'JetBrains Mono', monospace !important;
+    color: var(--emerald);
+    text-shadow: 0 0 10px rgba(16,255,153,0.3);
+}
+
 .section-title {
     font-size: 0.85rem;
     font-weight: 800;
@@ -96,6 +110,7 @@ footer { display: none !important; }
     background: rgba(255,255,255,0.02);
     border: 1px solid var(--glass-border);
     border-left: 4px solid var(--coral);
+    animation: glitch 0.3s infinite alternate;
 }
 
 .status-dot {
@@ -160,7 +175,7 @@ def render_alarm(st, latest_threat=None):
                         align-items: center; justify-content: center; flex-direction: column;
                         backdrop-filter: blur(2px);">
                 <div style="font-size: 8rem; font-weight: 900; color: #fff; text-shadow: 0 0 30px #f00;
-                            letter-spacing: -5px;">{threat_type.split()[0].upper()}</div>
+                            letter-spacing: -5px; animation: glitch 0.2s infinite;">{threat_type.split()[0].upper()}</div>
                 <div style="font-size: 1.5rem; font-weight: 700; color: #fff; letter-spacing: 10px; margin-top: 20px;">SOURCE IP: {attacker_ip}</div>
                 <div style="font-size: 0.8rem; font-weight: 500; color: rgba(255,255,255,0.7); letter-spacing: 5px; margin-top: 10px;">AUTONOMOUS RESPONSE ACTIVE</div>
             </div>
